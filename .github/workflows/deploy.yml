@@ -21,6 +21,11 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - name: Set Terraform Variables
+        run: |
+          echo 'subscription_id="${{ fromJson(secrets.AZURE_CREDENTIALS).subscriptionId }}"' >> terraform.auto.tfvars
+          echo 'tenant_id="${{ fromJson(secrets.AZURE_CREDENTIALS).tenantId }}"' >> terraform.auto.tfvars
 
       - name: Terraform Init
         run: terraform init
