@@ -1,0 +1,32 @@
+name: Destroy Infrastructure
+
+on:
+  workflow_dispatch:  # This makes it manual — triggered by a button in the UI
+
+jobs:
+  terraform-destroy:
+    runs-on: ubuntu-latest
+    name: Terraform Destroy
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set Terraform Variables
+        run: |
+          echo 'subscription_id="${{ fromJson(secrets.AZURE_CREDENTIALS).subscriptionId }}"' >> terraform.auto.tfvars
+          echo 'tenant_id="${{ fromJson(secrets.AZURE_CREDENTIALS).tenantId }}"' >> terraform.auto.tfvars
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve
