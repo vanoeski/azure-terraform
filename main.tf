@@ -7,7 +7,7 @@ provider "azurerm" {
 
 resource "azurerm_resource_group" "rg" {
   name     = "terraform-example-rg"
-  location = "East US"
+  location = "Central US"
 }
 
 resource "azurerm_app_service_plan" "plan" {
